@@ -8,6 +8,7 @@ bridge.port = 3000;
 process.env.NODE_ENV = 'production';
 
 const config = require('./nuxt.config.js');
+config.dev = false;
 const nuxt = new Nuxt(config);
 
 const server = new Server((req, res) => {
