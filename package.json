@@ -1,6 +1,6 @@
 {
     "name": "@bluebeel/nuxt",
-    "version": "0.0.15",
+    "version": "0.0.16",
     "dependencies": {
         "@now/node-bridge": "0.1.4",
         "execa": "^1.0.0",
