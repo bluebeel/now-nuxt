@@ -13,3 +13,6 @@ Add it to your `now.json` as:
   ]
 }
 ```
+
+## Example
+https://nuxtjs-v2.now.sh/
