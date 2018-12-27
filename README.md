@@ -16,3 +16,5 @@ Add it to your `now.json` as:
 
 ## Example
 https://nuxtjs-v2.now.sh/
+
+[Repository](https://github.com/bluebeel/now-nuxt-example) of the example.
