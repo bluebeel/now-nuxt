@@ -144,10 +144,15 @@ exports.build = async ({
     if (filesAfterBuild['nuxt.config.js']) {
         nuxtFiles['nuxt.config.js'] = filesAfterBuild['nuxt.config.js'];
     }
+    const dist = await glob(
+        '**/!(pages)/*',
+        path.join(workPath, '.nuxt', 'dist'),
+    );
     const pages = await glob(
         '**/*.js',
         path.join(workPath, '.nuxt', 'dist', 'client', 'pages'),
     );
+
     const launcherPath = path.join(__dirname, 'launcher.js');
     const launcherData = await readFile(launcherPath, 'utf8');
 
@@ -157,32 +162,14 @@ exports.build = async ({
 
             const pathname = page.replace(/\.js$/, '');
 
-            const pageFiles = {
-                [`.nuxt/dist/client/app.js`]: filesAfterBuild[
-                    `.nuxt/dist/client/app.js`
-                ],
-                [`.nuxt/dist/client/commons.app.js`]: filesAfterBuild[
-                    `.nuxt/dist/client/commons.app.js`
-                ],
-                [`.nuxt/dist/client/runtime.js`]: filesAfterBuild[
-                    `.nuxt/dist/client/runtime.js`
-                ],
-                [`.nuxt/dist/client/pages/${page}`]: filesAfterBuild[
-                    `.nuxt/dist/client/pages/${page}`
-                ],
-                [`.nuxt/dist/server/index.spa.html`]: filesAfterBuild[
-                    `.nuxt/dist/server/index.spa.html`
-                ],
-                [`.nuxt/dist/server/index.ssr.html`]: filesAfterBuild[
-                    `.nuxt/dist/server/index.spa.html`
-                ],
-                [`.nuxt/dist/server/vue-ssr-client-manifest.json`]: filesAfterBuild[
-                    `.nuxt/dist/server/vue-ssr-client-manifest.json`
-                ],
-                [`.nuxt/dist/server/server-bundle.json`]: filesAfterBuild[
-                    `.nuxt/dist/server/server-bundle.json`
-                ],
-            };
+            const pageFiles = {}
+            Object.keys(dist).forEach((file) => {
+                pageFiles[[`.nuxt/dist/${file}`]] = filesAfterBuild[`.nuxt/dist/${file}`]
+            })
+
+            pageFiles[[`.nuxt/dist/client/pages/${page}`]] = filesAfterBuild[
+                `.nuxt/dist/client/pages/${page}`
+            ]
 
             console.log(`Creating lambda for page: "${page}"...`);
             lambdas[path.join(entryDirectory, pathname)] = await createLambda({
@@ -259,7 +246,7 @@ exports.prepareCache = async ({
         ...(await glob('.nuxt/server/index.spa.html', cachePath)),
         ...(await glob('.nuxt/server/index.ssr.html', cachePath)),
         ...(await glob('.nuxt/server/vue-ssr-client-manifest.json', cachePath)),
-        ...(await glob('.next/server/server-bundle.json', cachePath)),
+        ...(await glob('.nuxt/server/server-bundle.json', cachePath)),
         ...(await glob('node_modules/**', cachePath)),
         ...(await glob('yarn.lock', cachePath)),
     };
