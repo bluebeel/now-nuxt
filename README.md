@@ -1,3 +1,6 @@
+# The Nuxt core team has created an official builder.
+I advise you to use this one. https://github.com/nuxt/now-builder
+
 # now-nuxt
 
 A Now v2 Nuxt builder.
